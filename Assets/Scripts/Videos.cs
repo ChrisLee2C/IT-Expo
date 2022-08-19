@@ -8,8 +8,8 @@ using UnityEngine.Video;
 public class Videos : MonoBehaviour
 {
     public GameObject screen;
-    public string primaryPath = @"C:\Users\cintec\Desktop\Unity Projects\Test\Assets\Videos\Primary School";
-    public string secondaryPath = @"C:\Users\cintec\Desktop\Unity Projects\Test\Assets\Videos\Secondary School";
+    [SerializeField] private string primaryPath = @"C:\Users\cintec\Desktop\Unity Projects\IT Expo\Assets\Videos\Primary School";
+    [SerializeField] private string secondaryPath = @"C:\Users\cintec\Desktop\Unity Projects\IT Expo\Assets\Videos\Secondary School";
     public List<string> videoPrimaryUrls;
     public List<string> videoSecondaryUrls;
     private List<string> secondaryVideos;
@@ -26,6 +26,7 @@ public class Videos : MonoBehaviour
 
     void GetFilePaths()
     {
+        //file.EndsWith("mov", StringComparison.OrdinalIgnoreCase) -> Search files with .mov endings
         primaryVideos =
             Directory.EnumerateFiles(primaryPath, "*.*").
             Where(file => file.ToLower().EndsWith("mp4") || file.EndsWith("mov", StringComparison.OrdinalIgnoreCase) ||
@@ -33,19 +34,13 @@ public class Videos : MonoBehaviour
         secondaryVideos =
             Directory.EnumerateFiles(secondaryPath, "*.*").
             Where(file => file.ToLower().EndsWith("mp4") || file.EndsWith("mov", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith("m4v", StringComparison.OrdinalIgnoreCase)).ToList();
+            file.EndsWith("m4v", StringComparison.OrdinalIgnoreCase) || file.EndsWith("webm", StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
     void InitVideos(List<string> videoPaths, List<string> urls)
     {
-        foreach (var item in videoPaths)
-        {
-            urls.Add(item);
-        }
+        foreach (var item in videoPaths) { urls.Add(item); }
     }
 
-    public void SetVideo(int index)
-    {
-        videoPlayer.url = videoPrimaryUrls[index-1];
-    }
+    public void SetVideo(int index) { videoPlayer.url = videoPrimaryUrls[index-1]; }
 }
