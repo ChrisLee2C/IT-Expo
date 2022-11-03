@@ -8,7 +8,6 @@ public class DisplayButton : MonoBehaviour
     private GameObject moreUICanvas;
     private Videos videos;
     private VideoPlayer videoPlayer;
-    private GameObject screenExit;
     private Button button;
 
     // Start is called before the first frame update
