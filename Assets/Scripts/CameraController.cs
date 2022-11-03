@@ -4,7 +4,7 @@ public class CameraController : MonoBehaviour
 {
     public float rotationSpeed = 40;
     public FixedJoystick fixedJoystick;
-    private bool isFreeMovement;
+    [SerializeField] private bool isFreeMovement;
     private Camera mainCamera;
     private PlayerController pController;
 
@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraRotation(float horizontalInput)
     {
-        if(horizontalInput != 0)
+        if (horizontalInput != 0)
         {
             FreeMovement(true);
         }

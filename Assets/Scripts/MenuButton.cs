@@ -1,24 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MenuButton : MonoBehaviour
 {
-    public List<GameObject> pages;
+    [HideInInspector] public List<GameObject> pageButtons;
+    [HideInInspector] public List<GameObject> pages;
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private GameObject pagePrefab;
+    [SerializeField] private Font font;
     private GameObject pageParent;
     private GameObject[] destinations;
+    private List<string> videoNames;
     private int quotient;
-    private int maxButtonNum = 10;
     private int remainder;
+    private int maxButtonNum = 10;
+    private int numOfButton = 0;
 
     // Start is called before the first frame update
     void Awake()
     {
         destinations = FindObjectOfType<PlayerController>().destinations;
-        quotient = 4;//destinations.Length / maxButtonNum;
-        remainder = 8;//destinations.Length % maxButtonNum;
+        videoNames = FindObjectOfType<Videos>().videoNames;
+        quotient = destinations.Length / maxButtonNum;
+        remainder = destinations.Length % maxButtonNum - 1;
         pageParent = GameObject.Find("Pages");
         CreatePage(quotient);
     }
@@ -26,45 +30,46 @@ public class MenuButton : MonoBehaviour
 
     private void CreatePage(int quotient)
     {
-        for (int times = 0; times < quotient; times++)
+        for (int times = 0; times < quotient + 1; times++)
         {
             GameObject page = Instantiate(pagePrefab, pageParent.transform.localPosition, Quaternion.identity, pageParent.transform);
             page.name = $"Page {times}";
             pages.Add(page);
             RectTransform pageRectTransform = page.GetComponent<RectTransform>();
-            pageRectTransform.transform.localPosition = new Vector3(-pageRectTransform.rect.width/2 + pageParent.transform.localPosition.x, -pageRectTransform.rect.height/2 + pageParent.transform.localPosition.y, 0);
-            CreateButton(times, page);
+            pageRectTransform.transform.localPosition = new Vector3(-pageRectTransform.rect.width / 2 + pageParent.transform.localPosition.x,
+                -pageRectTransform.rect.height / 2 + pageParent.transform.localPosition.y, 0);
+            CreateButton(times, page, page.transform.localPosition, page.transform.parent.transform.localPosition);
         }
     }
 
-    private void CreateButton(int times, GameObject page)
+    private void CreateButton(int times, GameObject page, Vector3 pageTransform, Vector3 pageParentTransform)
     {
-        if (times == quotient - 1)
-        {
-            for (int iter = 0; iter < remainder; iter++)
-            {
-                GameObject button = Instantiate(buttonPrefab, page.transform.localPosition, Quaternion.identity, page.transform);
-                button.name = $"Button {iter}";
-                button.transform.SetSiblingIndex(iter);
-                RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
-                Vector3 pageTransform = page.transform.localPosition;
-                Vector3 pageParentTransform = page.transform.parent.transform.localPosition;
-                buttonRectTransform.transform.localPosition = new Vector3(buttonRectTransform.rect.width / 2 + pageTransform.x - pageParentTransform.x,
-                    buttonRectTransform.rect.height / 2 - pageTransform.y - pageParentTransform.y/2 - iter * buttonRectTransform.rect.height, 0);
-            }
-        }
-        else
+        if (times != quotient)
         {
             for (int iter = 0; iter < maxButtonNum; iter++)
             {
                 GameObject button = Instantiate(buttonPrefab, page.transform.localPosition, Quaternion.identity, page.transform);
                 button.name = $"Button {iter}";
-                button.transform.SetSiblingIndex(iter);
+                button.GetComponent<PageButton>().InitButton(destinations[numOfButton + 1].transform, numOfButton + 1);
+                button.GetComponent<PageButton>().GetName(videoNames[numOfButton], font);
                 RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
-                Vector3 pageTransform = page.transform.localPosition;
-                Vector3 pageParentTransform = page.transform.parent.transform.localPosition;
                 buttonRectTransform.transform.localPosition = new Vector3(buttonRectTransform.rect.width / 2 + pageTransform.x - pageParentTransform.x,
-                    buttonRectTransform.rect.height / 2 - pageTransform.y - pageParentTransform.y/2 - iter * buttonRectTransform.rect.height, 0);
+                    buttonRectTransform.rect.height / 2 - pageTransform.y - pageParentTransform.y / 2 - iter * buttonRectTransform.rect.height, 0);
+                numOfButton++;
+            }
+        }
+        else
+        {
+            for (int iter = 0; iter < remainder; iter++)
+            {
+                GameObject button = Instantiate(buttonPrefab, page.transform.localPosition, Quaternion.identity, page.transform);
+                button.name = $"Button {iter}";
+                button.GetComponent<PageButton>().InitButton(destinations[numOfButton + 1].transform, numOfButton + 1);
+                button.GetComponent<PageButton>().GetName(videoNames[numOfButton], font);
+                RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
+                buttonRectTransform.transform.localPosition = new Vector3(buttonRectTransform.rect.width / 2 + pageTransform.x - pageParentTransform.x,
+                    buttonRectTransform.rect.height / 2 - pageTransform.y - pageParentTransform.y / 2 - iter * buttonRectTransform.rect.height, 0);
+                numOfButton++;
             }
         }
     }

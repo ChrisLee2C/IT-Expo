@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Page : MonoBehaviour
 {
@@ -22,7 +19,7 @@ public class Page : MonoBehaviour
             next.SetActive(true);
             back.SetActive(false);
         }
-        else if(gameObject.transform.GetSiblingIndex() == menuButton.pages.Capacity - 1)
+        else if (gameObject.transform.GetSiblingIndex() == menuButton.pages.Count - 1)
         {
             next.SetActive(false);
             back.SetActive(true);
@@ -32,9 +29,6 @@ public class Page : MonoBehaviour
             next.SetActive(true);
             back.SetActive(true);
         }
-        if (gameObject.transform.GetSiblingIndex() != 0)
-        {
-            gameObject.SetActive(false);
-        }
+        if (gameObject.transform.GetSiblingIndex() != 0) { gameObject.SetActive(false); }
     }
 }

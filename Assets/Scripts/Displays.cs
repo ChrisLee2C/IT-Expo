@@ -1,20 +1,42 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Displays : MonoBehaviour
 {
-    public GameObject display;
-    public List<Texture2D> textures;
-    private RawImage displayTexture;
+    //Select the gameObject with the script on it
+    //Click on little lock icon in the inspector, at the top right corner
+    //Click on the first image in your asset
+    //Hold SHIFT key, and click on the last image you want to select.All the images in between should be selected.
+    //Click and hold the list into the Images field in the inspector.
+    public List<Sprite> textures;
+    private List<string> primaryThumbnails;
+    private List<string> secondaryThumbnails;
+    private Image displayTexture;
+    private DisplayButton[] buttons;
 
     void Awake()
     {
-        displayTexture = display.GetComponent<RawImage>();
+        buttons = DestinationSort(FindObjectsOfType<DisplayButton>());
+        foreach (DisplayButton displayButton in buttons)
+        {
+            int index = GetVideoIndex(displayButton.gameObject);
+            SetImage(index);
+        }
+    }
+    
+    private int GetVideoIndex(GameObject index) { return index.transform.parent.parent.GetSiblingIndex(); }
+
+    private void SetImage(int index)
+    {
+        displayTexture = buttons[index - 1].GetComponent<Image>();
+        displayTexture.sprite = textures[index - 1];
     }
 
-    public void SetImage(int i)
+    DisplayButton[] DestinationSort(DisplayButton[] sortedButtons)
     {
-        displayTexture.texture = textures[i];
+        sortedButtons = sortedButtons.OrderBy(button => button.transform.parent.parent.GetSiblingIndex()).ToArray();
+        return sortedButtons;
     }
 }

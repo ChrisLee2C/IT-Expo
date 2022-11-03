@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public void NextDestination(int next){
         if (currentDestination + next < 0)
         {
-            currentDestination = destinations.Length - 1;
+            currentDestination = destinations.Length-1;
             navMeshAgent.SetDestination(destinations[currentDestination].transform.position);
         }
         else if (currentDestination + next >= destinations.Length)
